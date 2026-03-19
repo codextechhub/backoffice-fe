@@ -89,7 +89,7 @@ const CustomTable = ({
 
   const handlePickObjFromDefaultList = (param: any) => {
     if (defaultBodyList?.length > 0) {
-      const obj = defaultBodyList?.find((chi: any, idx: any) => idx === param);
+      const obj = defaultBodyList?.find((_: any, idx: any) => idx === param);
       return obj;
     }
   };

@@ -4,6 +4,8 @@ import { Plus } from "lucide-react";
 import { svgIcons } from "@/assets/svg";
 import { CustomInput } from "@/components/custom/custom-input";
 import CustomTable from "@/components/custom/custom-table";
+import { Link } from "react-router";
+import { routesPath } from "@/routes/routesPath";
 
 const tableHeader = ["Full Name", "Email", "Role", "Status", "Action"];
 
@@ -12,9 +14,11 @@ export default function InvitesTab() {
     <>
       <div className="flex items-center justify-between">
         <p className="font-semibold font-mont text-gray-01"></p>
-        <Button size="lg">
-          <Plus /> Add New User
-        </Button>
+        <Link to={routesPath.PROTECTED.TEAM_MGT.CREATE}>
+          <Button size="lg">
+            <Plus /> Add New User
+          </Button>
+        </Link>
       </div>
 
       <div className="flex items-center justify-between mt-8 gap-5">
@@ -48,6 +52,9 @@ export default function InvitesTab() {
             onActionClick: () => {},
           },
         ]}
+        perPage={10}
+        totalPage={5}
+        currentPage={2}
       />
     </>
   );

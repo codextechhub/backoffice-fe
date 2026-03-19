@@ -21,11 +21,19 @@ import {
 } from "@/assets/navbar-svg";
 import { NavMain } from "./nav-main";
 import { routesPath } from "@/routes/routesPath";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
+import PromptModal from "./modal/prompt-modal";
+import useToggleModal from "@/hooks/use-toggle";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const location = useLocation().pathname;
-  const handleLogout = () => {};
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    navigate(routesPath.AUTH.LOGIN, { replace: true });
+  };
+
+  const { isOpen: openLogout, toggleClick: toggleLogout } =
+    useToggleModal(false); // logout modal
 
   const data = {
     navMain: [
@@ -86,7 +94,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <SidebarMenuButton
                 className="h-10 mx-auto mb-10 hover:bg-destructive/5 hover:text-destructive"
                 tooltip="Logout"
-                onClick={handleLogout}
+                onClick={toggleLogout}
               >
                 <LogoutIcon />
                 <span>Logout</span>
@@ -96,6 +104,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarFooter>
         <SidebarRail />
       </Sidebar>
+
+      <PromptModal
+        isOpen={openLogout}
+        onClose={toggleLogout}
+        onConfirm={handleLogout}
+        title="Log Out?"
+        description="Are you sure you want to log out of your account?"
+        containerClass="min-h-[320px] lg:w-[390px]"
+        srcClass="size-25"
+        src="/image/caution.png"
+        onConfirmText="Log Out"
+        canCancel
+        loading={false}
+        onConfirmClass="bg-error-01 text-white shadow-xs hover:bg-error-01/90 focus-visible:ring-error-01/20"
+      />
     </>
   );
 }

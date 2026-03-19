@@ -4,6 +4,8 @@ import { Plus } from "lucide-react";
 import { svgIcons } from "@/assets/svg";
 import { CustomInput } from "@/components/custom/custom-input";
 import CustomTable from "@/components/custom/custom-table";
+import { routesPath } from "@/routes/routesPath";
+import { Link } from "react-router";
 
 const tableHeader = [
   "Full Name",
@@ -19,9 +21,11 @@ export default function MembersTab() {
     <>
       <div className="flex items-center justify-between">
         <p className="font-semibold font-mont text-gray-01">User Information</p>
-        <Button size="lg">
-          <Plus /> Add New User
-        </Button>
+        <Link to={routesPath.PROTECTED.TEAM_MGT.CREATE}>
+          <Button size="lg">
+            <Plus /> Add New User
+          </Button>
+        </Link>
       </div>
 
       <div className="flex items-center justify-between mt-8 gap-5">
@@ -66,6 +70,9 @@ export default function MembersTab() {
             onActionClick: () => {},
           },
         ]}
+        perPage={10}
+        totalPage={5}
+        currentPage={1}
       />
     </>
   );
@@ -100,6 +107,30 @@ const dummyData = {
     },
     {
       id: 2,
+      name: "Samuel David",
+      email: "david@yopmail.com",
+      role: "compliance-admin",
+      status: "Inactive",
+      date: "11 Aug 2025",
+    },
+    {
+      id: 3,
+      name: "Samuel David",
+      email: "david@yopmail.com",
+      role: "compliance-admin",
+      status: "Inactive",
+      date: "11 Aug 2025",
+    },
+    {
+      id: 4,
+      name: "Samuel David",
+      email: "david@yopmail.com",
+      role: "compliance-admin",
+      status: "Active",
+      date: "11 Aug 2025",
+    },
+    {
+      id: 5,
       name: "Samuel David",
       email: "david@yopmail.com",
       role: "compliance-admin",

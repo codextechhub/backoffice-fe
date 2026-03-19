@@ -40,7 +40,7 @@ export default function DashboardLayout({
                     onClick={() => {
                       onBack ? onBack() : navigate(-1);
                     }}
-                    className="uppercase font-light text-gray-01 text-sm inline-flex items-center"
+                    className="uppercase font-light text-gray-01 text-sm inline-flex items-center cursor-pointer"
                   >
                     <ChevronLeft className="text-inherit size-5 mr-1" />
                     Back
