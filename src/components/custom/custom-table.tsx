@@ -313,7 +313,7 @@ const CustomTable = ({
                   }
                 }}
                 className={cn(
-                  "grid size-[30px] place-content-center rounded-md text-sm font-medium transition-colors",
+                  "grid size-7.5 place-content-center rounded-md text-sm font-medium transition-colors",
                   isActive
                     ? "bg-primary text-white"
                     : "bg-transparent text-black-02 hover:bg-gray-100",
