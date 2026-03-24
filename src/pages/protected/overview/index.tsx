@@ -2,7 +2,7 @@ import DashboardLayout from "@/components/layout/dashboard-layout";
 
 export default function Overview() {
   return (
-    <DashboardLayout hasBack>
+    <DashboardLayout>
       <main className="px-4.5 py-6 space-y-5">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {Array.from({ length: 4 }).map((_, idx) => (

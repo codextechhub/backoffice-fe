@@ -1,9 +1,6 @@
-import { svgIcons } from "@/assets/svg";
 import { CustomInput } from "@/components/custom/custom-input";
-import PromptModal from "@/components/modal/prompt-modal";
+import StepProgressBar from "@/components/custom/step-progress-bar";
 import { Button } from "@/components/ui/button";
-import useToggleModal from "@/hooks/use-toggle";
-import { routesPath } from "@/routes/routesPath";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
@@ -11,10 +8,10 @@ import { useNavigate } from "react-router";
 export default function AddSchoolAdmin() {
   const navigate = useNavigate();
   const [count, setCount] = useState(1);
-  const { isOpen, toggleClick } = useToggleModal(false);
   return (
     <>
-      <div className="max-w-235">
+      <StepProgressBar totalSteps={4} currentStep={3} />
+      <div className="max-w-235 mt-5">
         <div className="mb-7 space-y-1.5">
           <h4 className="font-medium text-xl text-black-01">
             Create School Admin
@@ -25,14 +22,12 @@ export default function AddSchoolAdmin() {
           </p>
         </div>
 
-        <p className="inline-flex items-center text-gray-05 text-sm mb-4">
-          School Admin
-          <figure className="size-fit ml-2">{svgIcons.infoIcon}</figure>
-        </p>
-
         <div className="space-y-10 mb-4">
           {Array.from({ length: count }).map((_, idx) => (
             <div key={idx} className="grid md:grid-cols-2 gap-x-8 gap-y-6">
+              <p className="inline-flex items-center col-span-full text-gray-05 text-sm m">
+                School Admin {idx + 1}
+              </p>
               <CustomInput
                 id="fname"
                 label="First Name"
@@ -78,23 +73,16 @@ export default function AddSchoolAdmin() {
           <Button variant={"outline-dest"} className="w-37">
             Cancel
           </Button>
-          <Button onClick={toggleClick} className="w-37">
-            Send Invite
+          <Button
+            onClick={() => {
+              navigate({ search: "?step=plan" });
+            }}
+            className="w-37"
+          >
+            Continue
           </Button>
         </div>
       </div>
-
-      <PromptModal
-        isOpen={isOpen}
-        onConfirm={() => {
-          toggleClick();
-          navigate(routesPath.PROTECTED.SCHOOL_MGT.INDEX + "?status=pending", {
-            replace: true,
-          });
-        }}
-        title="Invite Successfully Sent!"
-        description="You have successfully sent an invite to the added admin, click the button below to continue "
-      />
     </>
   );
 }
