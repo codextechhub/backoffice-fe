@@ -1,7 +1,6 @@
 import { svgIcons } from "@/assets/svg";
 import { CustomInput } from "@/components/custom/custom-input";
 import { CustomNativeSelect } from "@/components/custom/custom-native-select";
-import StepProgressBar from "@/components/custom/step-progress-bar";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 
@@ -9,7 +8,6 @@ export default function AddSchool() {
   const navigate = useNavigate();
   return (
     <>
-      <StepProgressBar totalSteps={4} currentStep={1} />
       <div className="max-w-235 mt-5">
         <div className="mb-7 space-y-1.5">
           <h4 className="font-medium text-xl text-black-01">

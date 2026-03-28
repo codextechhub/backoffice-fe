@@ -1,6 +1,5 @@
 import { CustomInput } from "@/components/custom/custom-input";
 import { CustomNativeSelect } from "@/components/custom/custom-native-select";
-import StepProgressBar from "@/components/custom/step-progress-bar";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Plus } from "lucide-react";
@@ -12,7 +11,6 @@ export default function AddSchoolBranch() {
   const navigate = useNavigate();
   return (
     <>
-      <StepProgressBar totalSteps={4} currentStep={2} />
       <div className="max-w-235 mt-5">
         <div className="mb-7 space-y-1.5">
           <h4 className="font-medium text-xl text-black-01">Add Branch</h4>

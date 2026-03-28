@@ -3,7 +3,6 @@ import { CustomDateInput } from "@/components/custom/custom-date-input";
 import { CustomInput } from "@/components/custom/custom-input";
 import { CustomNativeSelect } from "@/components/custom/custom-native-select";
 import { MultiSelectInput } from "@/components/custom/multiselect-input";
-import StepProgressBar from "@/components/custom/step-progress-bar";
 import PromptModal from "@/components/modal/prompt-modal";
 import { Button } from "@/components/ui/button";
 import useToggleModal from "@/hooks/use-toggle";
@@ -15,7 +14,6 @@ export default function PackageSetup() {
   const { isOpen, toggleClick } = useToggleModal(false);
   return (
     <>
-      <StepProgressBar totalSteps={4} currentStep={4} />
       <div className="max-w-235 mt-5">
         <div className="mb-7 space-y-1.5">
           <h4 className="font-medium text-xl text-black-01">Package Setup</h4>
