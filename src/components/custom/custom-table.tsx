@@ -121,7 +121,7 @@ const CustomTable = ({
   );
 
   return (
-    <div className="w-full flex flex-col ">
+    <>
       {/* table component start here ------ */}
       <Table>
         {tableHeaderList?.length > 0 && (
@@ -326,7 +326,7 @@ const CustomTable = ({
           })}
         </div>
       )}
-    </div>
+    </>
   );
 };
 

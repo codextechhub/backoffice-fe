@@ -24,12 +24,33 @@ import { routesPath } from "@/routes/routesPath";
 import { useLocation, useNavigate } from "react-router";
 import PromptModal from "./modal/prompt-modal";
 import useToggleModal from "@/hooks/use-toggle";
+import { useLogoutMutation } from "@/redux/services/auth/authApi";
+import Cookies from "js-cookie";
+import { useAppDispatch } from "@/redux/store";
+import { resetAuth } from "@/redux/features/auth/authSlice";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const location = useLocation().pathname;
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const refresh = Cookies.get("refresh_token") || "";
+  const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
+
   const handleLogout = () => {
-    navigate(routesPath.AUTH.LOGIN, { replace: true });
+    logout({ refresh: refresh })
+      .unwrap()
+      .then(() => {
+        navigate(routesPath.AUTH.LOGIN, { replace: true });
+      })
+      .catch((error) => {
+        if (import.meta.env.DEV) console.error("Logout failed:", error);
+      })
+      .finally(() => {
+        navigate(routesPath.AUTH.LOGIN, { replace: true });
+        Cookies.remove("token");
+        Cookies.remove("refresh_token");
+        dispatch(resetAuth());
+      });
   };
 
   const { isOpen: openLogout, toggleClick: toggleLogout } =
@@ -116,9 +137,38 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         src="/image/caution.png"
         onConfirmText="Log Out"
         canCancel
-        loading={false}
+        loading={isLoggingOut}
         onConfirmClass="bg-error-01 text-white shadow-xs hover:bg-error-01/90 focus-visible:ring-error-01/20"
       />
     </>
   );
 }
+
+const ggg = {
+  access:
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzc2ODc1NTk5LCJpYXQiOjE3NzY4NzQ2OTksImp0aSI6IjEyNTA4ODIyZmMzYTRjNmZiMTU0MDYxZTBjODFkNjRhIiwidXNlcl9pZCI6IjEiLCJ1c2VyX3R5cGUiOiJWSVNJT05fU1RBRkYiLCJzY2hvb2xfaWQiOm51bGwsImJyYW5jaF9pZCI6bnVsbCwiYWNjb3VudF9zdGF0dXMiOiJBQ1RJVkUiLCJmdWxsX25hbWUiOiJTeXN0ZW0gQWRtaW5pc3RyYXRvciJ9.EHl-4TSFdp7TF3PIdGoJs-xI27q0bwFaV9buU-q9-Iw",
+  refresh:
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3Njk2MTA5OSwiaWF0IjoxNzc2ODc0Njk5LCJqdGkiOiJkYmM4N2U5YTc1YTM0MDM3ODNhNGRhMDQwOTg2ODlmZSIsInVzZXJfaWQiOiIxIiwidXNlcl90eXBlIjoiVklTSU9OX1NUQUZGIiwic2Nob29sX2lkIjpudWxsLCJicmFuY2hfaWQiOm51bGwsImFjY291bnRfc3RhdHVzIjoiQUNUSVZFIiwiZnVsbF9uYW1lIjoiU3lzdGVtIEFkbWluaXN0cmF0b3IifQ.kM_Hvgb7cHoUAWrpsYD21pPcPsLfiYZdg7dDpajLHmI",
+  session_id: 24,
+  user: {
+    id: 1,
+    email: "admin@codexng.com",
+    first_name: "System",
+    last_name: "Administrator",
+    full_name: "System Administrator",
+    phone: "",
+    user_type: "VISION_STAFF",
+    role: "",
+    status: "ACTIVE",
+    school_id: null,
+    school_name: null,
+    branch_id: null,
+    branch_name: null,
+    invited_by_id: null,
+    invited_by_name: null,
+    password_changed_at: null,
+    last_login_at: "2026-04-22T16:18:19.987391Z",
+    created_at: "2026-04-12T12:27:15.162145Z",
+    updated_at: "2026-04-22T16:18:19.987476Z",
+  },
+};

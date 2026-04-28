@@ -15,7 +15,7 @@ export default function TeamManagement() {
 
   return (
     <DashboardLayout title="Team Management">
-      <main className="px-4.5 py-6 space-y-5 text-black-01">
+      <main className="px-4.5 py-6 space-y-5 text-black-01 grid ">
         <Tabs tabs={tabList} tabKey="tab" />
 
         {activeTab === "invites" ? <InvitesTab /> : <MembersTab />}

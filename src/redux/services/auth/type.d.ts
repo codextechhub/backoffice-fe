@@ -1,0 +1,15 @@
+import type { User } from "@/redux/features/auth/type";
+
+export interface ResponseMessage {
+    status: boolean;
+    message: string;
+}
+
+export interface LoginResponse extends ResponseMessage {
+  data: {
+    access: string
+    refresh: string
+    session_id: number
+    user: User
+  }
+}

@@ -1,0 +1,52 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { generateQueryString } from "@/utils/helpers";
+import { baseApi } from "../baseApi";
+import type { TeamMemberRes, TeamMembersRes } from "./type";
+
+export const teamMgtApi = baseApi.injectEndpoints({
+  endpoints: (builder) => ({
+    getTeamMembers: builder.query<
+      TeamMembersRes,
+      Record<string, string | number>
+    >({
+      query: (payload) => ({
+        url: `/user/users/${generateQueryString(payload)}`,
+        method: "GET",
+      }),
+    }),
+    getTeamMembersDetails: builder.query<TeamMemberRes, string>({
+      query: (user_id) => ({
+        url: `/user/users/${user_id}/`,
+        method: "GET",
+      }),
+    }),
+    resendInvite: builder.mutation({
+      query: (user_id) => ({
+        url: `/user/${user_id}/invite/resend/`,
+        method: "POST",
+      }),
+    }),
+    createTeamMember: builder.mutation({
+      query: (payload) => ({
+        url: `/user/users/`,
+        method: "POST",
+        body: payload,
+      }),
+    }),
+    updateTeamMember: builder.mutation({
+      query: (payload) => ({
+        url: `/user/users/${payload.id}/`,
+        method: "PATCH",
+        body: payload.body,
+      }),
+    }),
+  }),
+});
+
+export const {
+  useGetTeamMembersQuery,
+  useResendInviteMutation,
+  useCreateTeamMemberMutation,
+  useGetTeamMembersDetailsQuery,
+  useUpdateTeamMemberMutation,
+} = teamMgtApi;

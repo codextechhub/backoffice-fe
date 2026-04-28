@@ -1,5 +1,6 @@
 import { CustomInput } from "@/components/custom/custom-input";
 import { Button } from "@/components/ui/button";
+import { useLoginMutation } from "@/redux/services/auth/authApi";
 import { routesPath } from "@/routes/routesPath";
 import { loginSchema } from "@/schema/auth";
 import { useFormik } from "formik";
@@ -7,14 +8,20 @@ import { Link, useNavigate } from "react-router";
 
 export default function Login() {
   const navigate = useNavigate();
+  const [login, { isLoading }] = useLoginMutation();
   const formik = useFormik({
     initialValues: {
       password: "",
       email: "",
     },
     validationSchema: loginSchema,
-    onSubmit: () => {
-      navigate(routesPath.PROTECTED.OVERVIEW.INDEX, { replace: true });
+    onSubmit: (values) => {
+      login(values)
+        .unwrap()
+        .then(() => {
+          navigate(routesPath.PROTECTED.OVERVIEW.INDEX, { replace: true });
+        })
+        .catch(() => {});
     },
   });
 
@@ -58,7 +65,8 @@ export default function Login() {
         </div>
 
         <Button
-          disabled={!formik.isValid || !formik.dirty}
+          disabled={!formik.isValid || !formik.dirty || isLoading}
+          loading={isLoading}
           type="submit"
           className="w-full h-11"
         >

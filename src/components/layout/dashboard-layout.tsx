@@ -3,17 +3,10 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { AppSidebar } from "../app-sidebar";
 import { svgIcons } from "@/assets/svg";
-import { LogoutIcon } from "@/assets/navbar-svg";
-import { ChevronDown, ChevronLeft, User2 } from "lucide-react";
-import {
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuItem,
-  DropdownMenu,
-} from "../ui/dropdown-menu";
+import { ChevronLeft } from "lucide-react";
 import { useNavigate } from "react-router";
+import { useAppSelector } from "@/redux/store";
+import { returnInitial } from "@/utils/helpers";
 
 export default function DashboardLayout({
   children,
@@ -27,6 +20,7 @@ export default function DashboardLayout({
   onBack?: () => void;
 }) {
   const navigate = useNavigate();
+  const user = useAppSelector((state) => state.auth.user);
   return (
     <>
       <SidebarProvider>
@@ -69,55 +63,25 @@ export default function DashboardLayout({
                 className=" data-[orientation=vertical]:h-7"
               />
 
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <figure className="inline-flex items-center gap-x-3 pl-2.5 py-1 ">
-                    <Avatar>
-                      <AvatarImage src={"/image/avatar2.png"} />
-                      <AvatarFallback>OE</AvatarFallback>
-                    </Avatar>
-
-                    <ChevronDown className="size-5 text-gray-01" />
-                  </figure>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  className="min-w-58 "
-                  align="end"
-                  sideOffset={4}
-                >
-                  <DropdownMenuLabel className="p-0 font-normal">
-                    <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                      <Avatar className="size-8 rounded-lg">
-                        <AvatarImage src={"/image/avatar2.png"} />
-                        <AvatarFallback>OE</AvatarFallback>
-                      </Avatar>
-                      <div className="grid flex-1 text-left text-sm leading-tight">
-                        <span className="truncate font-medium">
-                          Osegbo Emeka
-                        </span>
-                        <span className="text-muted-foreground truncate text-xs">
-                          alphaoseghe@gmail.com
-                        </span>
-                      </div>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-gray-07" onClick={() => {}}>
-                    <User2 className=" text-inherit" />
-                    Profile
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="text-destructive hover:bg-destructive/5! hover:text-destructive!"
-                    onClick={() => {}}
-                  >
-                    <LogoutIcon className="text-destructive" />
-                    Log out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <figure className="inline-flex items-center gap-x-3 pl-2.5 py-1 ">
+                <Avatar>
+                  <AvatarImage src={"/image/avatar2.png"} />
+                  <AvatarFallback>
+                    {returnInitial(user?.full_name ?? "O")}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium">
+                    {user?.full_name || ""}
+                  </span>
+                  <span className="text-muted-foreground truncate text-xs">
+                    {user?.email || ""}
+                  </span>
+                </div>
+              </figure>
             </div>
           </header>
-          <div className="flex flex-1 flex-col pt-0">{children}</div>
+          <div className="grid pt-0">{children}</div>
         </SidebarInset>
       </SidebarProvider>
     </>

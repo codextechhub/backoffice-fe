@@ -5,7 +5,12 @@ import { svgIcons } from "@/assets/svg";
 import { CustomInput } from "@/components/custom/custom-input";
 import CustomTable from "@/components/custom/custom-table";
 import { routesPath } from "@/routes/routesPath";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { useGetTeamMembersQuery } from "@/redux/services/dashboard/teamMgtApi";
+import { useEffect, useMemo, useState } from "react";
+import type { TeamMember } from "@/redux/services/dashboard/type";
+import { format } from "date-fns";
+import { useDebounce } from "react-haiku";
 
 const tableHeader = [
   "Full Name",
@@ -17,6 +22,30 @@ const tableHeader = [
 ];
 
 export default function MembersTab() {
+  const [value, setValue] = useState("");
+  const debouncedValue = useDebounce(value, 1000);
+  const navigate = useNavigate();
+  const [query, setQuery] = useState({
+    page: 1,
+  });
+
+  useEffect(() => {
+    setQuery((prev) => ({
+      ...prev,
+      page: 1,
+    }));
+  }, [debouncedValue]);
+
+  const params = useMemo(
+    () => ({
+      ...query,
+      search: debouncedValue,
+    }),
+    [query, debouncedValue],
+  );
+
+  const { data, isFetching } = useGetTeamMembersQuery(params);
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -35,6 +64,8 @@ export default function MembersTab() {
           placeholder="Search..."
           className="h-10"
           containerClass="max-w-[280px]"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
         />
 
         <div className="inline-flex items-center gap-3.5">
@@ -50,7 +81,7 @@ export default function MembersTab() {
 
       <CustomTable
         tableHeaderList={tableHeader}
-        tableBodyList={FORMAT_TABLE_DATA(dummyData)}
+        tableBodyList={FORMAT_TABLE_DATA(data?.data)}
         dropDown
         dropDownList={[
           {
@@ -61,7 +92,9 @@ export default function MembersTab() {
           {
             label: "Edit",
             className: "",
-            onActionClick: () => {},
+            onActionClick: (param: { _slug: string }) => {
+              navigate(routesPath.PROTECTED.TEAM_MGT.EDIT(param._slug));
+            },
           },
           {
             label: "Delete",
@@ -70,17 +103,18 @@ export default function MembersTab() {
             onActionClick: () => {},
           },
         ]}
-        perPage={10}
-        totalPage={5}
-        currentPage={1}
+        perPage={data?.pagination?.pageSize}
+        totalPage={data?.pagination?.totalPages}
+        currentPage={data?.pagination?.currentPage}
+        loading={isFetching}
       />
     </>
   );
 }
 
-const FORMAT_TABLE_DATA = (data: any) => {
-  return data?.data?.map((item: any) => ({
-    name: <p className="capitalize">{item?.name || "---"}</p>,
+const FORMAT_TABLE_DATA = (data?: TeamMember[]) => {
+  return data?.map((item: any) => ({
+    name: <p className="capitalize truncate">{item?.full_name || "---"}</p>,
     email: item?.email || "---",
 
     role: item?.role || "---",
@@ -89,58 +123,7 @@ const FORMAT_TABLE_DATA = (data: any) => {
         {item?.status || "---"}
       </Badge>
     ),
-    date: item?.date || "---",
+    date: item?.created_at ? format(item?.created_at, "dd MMM, yyyy") : "---",
     _slug: item?.id,
   }));
-};
-
-const dummyData = {
-  success: true,
-  data: [
-    {
-      id: 1,
-      name: "Tolulope Gaji",
-      email: "tolu@yopmail.com",
-      role: "super-admin",
-      status: "Active",
-      date: "20 Aug 2025",
-    },
-    {
-      id: 2,
-      name: "Samuel David",
-      email: "david@yopmail.com",
-      role: "compliance-admin",
-      status: "Inactive",
-      date: "11 Aug 2025",
-    },
-    {
-      id: 3,
-      name: "Samuel David",
-      email: "david@yopmail.com",
-      role: "compliance-admin",
-      status: "Inactive",
-      date: "11 Aug 2025",
-    },
-    {
-      id: 4,
-      name: "Samuel David",
-      email: "david@yopmail.com",
-      role: "compliance-admin",
-      status: "Active",
-      date: "11 Aug 2025",
-    },
-    {
-      id: 5,
-      name: "Samuel David",
-      email: "david@yopmail.com",
-      role: "compliance-admin",
-      status: "Inactive",
-      date: "11 Aug 2025",
-    },
-  ],
-  meta: {
-    total: 6,
-    page: 1,
-    pageSize: 10,
-  },
 };

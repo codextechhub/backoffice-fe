@@ -7,15 +7,44 @@ import useToggleModal from "@/hooks/use-toggle";
 import { routesPath } from "@/routes/routesPath";
 import { useNavigate } from "react-router";
 import { CustomNativeSelect } from "@/components/custom/custom-native-select";
+import { useGetAllRolesQuery } from "@/redux/services/dashboard/roleApi";
+import { useFormik } from "formik";
+import { createTeamMemberSchema } from "@/schema/dashboard/team-mgt";
+import { useCreateTeamMemberMutation } from "@/redux/services/dashboard/teamMgtApi";
 
 export default function CreateAdmin() {
   const navigate = useNavigate();
   const { isOpen, toggleClick } = useToggleModal(false);
+
+  const { data: roles } = useGetAllRolesQuery({ page_size: 200 });
+  const [createTeamMember, { isLoading: creating }] =
+    useCreateTeamMemberMutation();
+
+  const formik = useFormik({
+    initialValues: {
+      first_name: "",
+      last_name: "",
+      email: "",
+      role: "",
+      phone: "",
+      gender: "",
+    },
+    validationSchema: createTeamMemberSchema,
+    onSubmit: (values) => {
+      createTeamMember(values)
+        .unwrap()
+        .then(() => {
+          toggleClick();
+        })
+        .catch();
+    },
+  });
+
   return (
     <DashboardLayout title="Team Management" hasBack>
       <section className="px-4.5 py-6">
         <>
-          <div className="max-w-235">
+          <form onSubmit={formik.handleSubmit} className="max-w-235">
             <div className="mb-7 space-y-1.5">
               <h4 className="font-medium text-xl text-black-01">
                 Add Team Member
@@ -37,31 +66,52 @@ export default function CreateAdmin() {
                 label="First Name"
                 placeholder="Enter first name e.g., Emeka"
                 isRequired
+                {...formik.getFieldProps("first_name")}
+                error={
+                  formik.touched.first_name
+                    ? formik.errors.first_name
+                    : undefined
+                }
               />
               <CustomInput
                 id="last_name"
                 label="Last Name"
                 placeholder="Enter last name e.g., Osegbo"
                 isRequired
+                {...formik.getFieldProps("last_name")}
+                error={
+                  formik.touched.last_name ? formik.errors.last_name : undefined
+                }
               />
               <CustomInput
                 id="email"
                 label="Email Address"
                 placeholder="Enter email address"
                 isRequired
+                {...formik.getFieldProps("email")}
+                error={formik.touched.email ? formik.errors.email : undefined}
               />
               <CustomNativeSelect
                 id="role"
                 label="Role Title"
                 placeholder="Select role"
-                options={[]}
+                options={
+                  roles?.data.map((role) => ({
+                    label: role.name,
+                    value: role.id,
+                  })) || []
+                }
                 isRequired
+                {...formik.getFieldProps("role")}
+                error={formik.touched.role ? formik.errors.role : undefined}
               />
               <CustomInput
-                id="tele"
+                id="phone"
                 label="Phone Number"
                 placeholder="Enter phone number e.g., +23481..."
                 isRequired
+                {...formik.getFieldProps("phone")}
+                error={formik.touched.phone ? formik.errors.phone : undefined}
               />
               <CustomNativeSelect
                 id="gender"
@@ -72,18 +122,22 @@ export default function CreateAdmin() {
                   { label: "Female", value: "female" },
                 ]}
                 isRequired
+                {...formik.getFieldProps("gender")}
+                error={formik.touched.gender ? formik.errors.gender : undefined}
               />
             </div>
 
             <div className="mt-10 inline-flex items-center gap-4">
-              <Button variant={"outline-dest"} className="w-37">
-                Cancel
-              </Button>
-              <Button onClick={toggleClick} className="w-37">
+              <Button
+                type="submit"
+                disabled={!formik.isValid || !formik.dirty || creating}
+                loading={creating}
+                className="w-37"
+              >
                 Send Invite
               </Button>
             </div>
-          </div>
+          </form>
 
           <PromptModal
             isOpen={isOpen}
