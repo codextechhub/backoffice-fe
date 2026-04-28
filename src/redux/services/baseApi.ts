@@ -32,6 +32,7 @@ export const baseQuery = fetchBaseQuery({
 
 // Refresh token request
 const refreshTokenRequest = async (refreshToken?: string) => {
+  const accessToken = getAccessToken();
   if (!refreshToken) return null;
   try {
     const response = await fetch(`${baseUrl}/user/auth/token/refresh/`, {
@@ -39,7 +40,8 @@ const refreshTokenRequest = async (refreshToken?: string) => {
       headers: {
         "Content-Type": "application/json",
         accept: "application/json",
-        "x-refresh-token": refreshToken,
+         redirect: 'follow',
+         Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify({ refresh: refreshToken }),
     });
@@ -60,6 +62,7 @@ export const baseQueryInterceptor: BaseQueryFn<
   if (result?.error) {
     const res: any = result?.error;
     console.log(res, "api")
+    
     if (res?.status === 400) {
       if (res?.data?.message) {
         toast.error(res?.data?.message);
@@ -94,7 +97,6 @@ export const baseQueryInterceptor: BaseQueryFn<
           window.location.href = routesPath.AUTH.LOGIN;
           return retryResult; // Return the failed retry result
         }
-        // if i don't return this, the refetch data won't update on the hook
         return retryResult; // Return the failed retry result
       } else {
         // Refresh failed, force logout
@@ -111,6 +113,7 @@ export const baseQueryInterceptor: BaseQueryFn<
           toast.error(res?.detail || "Authentication failed.");
         } else {
           // Force logout for non-auth routes
+
           api.dispatch(resetAuth());
           Cookies.remove("token");
           Cookies.remove("refresh_token");

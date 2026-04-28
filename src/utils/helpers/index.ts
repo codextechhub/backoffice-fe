@@ -21,14 +21,6 @@ export function capitalizeFirstLetter(sentence: string) {
   return sentence?.charAt(0)?.toUpperCase() + sentence?.slice(1);
 }
 
-export const getCycledValue = (
-  array: [],
-  index: number,
-  loop?: number
-): number => {
-  return (index % (loop ? loop : 6)) + 1;
-};
-
 export function returnInitial(name: string) {
   if (name) {
     const i = name?.split(" ");
